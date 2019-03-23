@@ -33,7 +33,6 @@ matrix:
       install:
         - rm -f package-lock.json
         - npm install
-        - npm update
       script:
         - npm run build-win
       after_success:
@@ -47,7 +46,6 @@ matrix:
       install:
         - rm -f package-lock.json
         - npm install
-        - npm update
       script:
         - "travis_wait 30 sleep 1800 &"
         - npm run build-linux
@@ -63,7 +61,6 @@ matrix:
       install:
         - rm -f package-lock.json
         - npm install
-        - npm update
       script:
         - "travis_wait 30 sleep 1800 &"
         - npm run build-mac
@@ -76,24 +73,3 @@ branches:
     - custom02
   except:
     - master
-
-before_deploy:
-  - git config --local user.name "fr3aky"
-  - git config --local user.email "fr3aky@phantom.zone"
-  - export TRAVIS_TAG=${TRAVIS_TAG:-Snapshot-$(date +'%Y%m%d-%H%M')}
-  - git tag -a $TRAVIS_TAG -m "Releasing Udeler Snapshot - by Updates"
-
-deploy:
-  skip_cleanup: true
-  provider: releases
-  api_key: $GitOAUTHToken
-  on:
-    branch: custom02
-  file_glob: true
-  file:
-    - dist/Udeler*.AppImage
-    - dist/Udeler*.snap
-    - dist/Udeler*.exe
-    - dist/Udeler*.dmg
-    - dist/Udeler*.zip
-  
