@@ -73,3 +73,18 @@ branches:
     - custom02
   except:
     - master
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key: $GitOAUTHToken
+  on:
+    tags: false
+    branch: custom02
+  file_glob: true
+  file:
+    - dist/Udeler*.AppImage
+    - dist/Udeler*.snap
+    - dist/Udeler*.exe
+    - dist/Udeler*.dmg
+    - dist/Udeler*.zip
