@@ -1,0 +1,93 @@
+sudo: required
+
+language: node_js
+node_js: "10"
+
+cache:
+  directories:
+    - node_modules
+
+git:
+  depth: 3
+
+matrix:
+  include:
+    - name: "Build Udeler GUI for Windows on Ubuntu Xenial with Node LTS"
+      os: linux
+      dist: xenial
+      addons:
+        apt:
+          update: true
+      before_install:
+        - "travis_wait 30 sleep 1800 &"
+        - sudo dpkg --add-architecture i386
+        - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        - sudo apt-get install apt-transport-https ca-certificates
+        - echo "deb https://download.mono-project.com/repo/ubuntu stable-xenial main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+        - wget -nc https://dl.winehq.org/wine-builds/winehq.key
+        - sudo apt-key add winehq.key
+        - sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
+        - sudo apt-get update -qy
+        - sudo apt-get install -y mono-complete ca-certificates-mono
+        - sudo apt-get install --install-recommends -y wine64-* winehq-stable
+      install:
+        - npm install
+      script:
+        - npm run build-win
+      after_success:
+        - curl --progress-bar --upload-file dist/Udeler*.exe https://transfer.sh/ && echo ""
+    - name: "Build Udeler GUI for Ubuntu Xenial with Node LTS"
+      os: linux
+      dist: xenial
+      addons:
+        apt:
+          update: true
+      install:
+        - npm install
+      script:
+        - "travis_wait 30 sleep 1800 &"
+        - npm run build-linux
+      after_success:
+        - curl --progress-bar --upload-file dist/Udeler*.AppImage https://transfer.sh/ && echo ""
+        - curl --progress-bar --upload-file dist/Udeler*.snap https://transfer.sh/ && echo ""
+    - name: "Build Udeler GUI for MacOS with Node LTS"
+      os: osx
+      osx_image: xcode9.4
+      addons:
+        homebrew:
+          update: true
+      install:
+        - npm install
+      script:
+        - "travis_wait 30 sleep 1800 &"
+        - npm run build-mac
+      after_success:
+        - curl --progress-bar --upload-file dist/Udeler*.zip https://transfer.sh/ && echo ""
+        - curl --progress-bar --upload-file dist/Udeler*.dmg https://transfer.sh/ && echo ""
+
+branches:
+  only:
+    - custom01
+  except:
+    - master
+
+before_deploy:
+  - git config --local user.name "fr3aky"
+  - git config --local user.email "fr3aky@phantom.zone"
+  - export TRAVIS_TAG=${TRAVIS_TAG:-Snapshot-$(date +'%Y%m%d-%H%M')}
+  - git tag -a $TRAVIS_TAG -m "Releasing Udeler Snapshot"
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key: $GitOAUTHToken
+  on:
+    branch: custom01
+  file_glob: true
+  file:
+    - dist/Udeler*.AppImage
+    - dist/Udeler*.snap
+    - dist/Udeler*.exe
+    - dist/Udeler*.dmg
+    - dist/Udeler*.zip
+  
