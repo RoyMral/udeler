@@ -80,7 +80,7 @@ deploy:
   api_key: $GitOAUTHToken
   on:
     tags: false
-    branch: custom02
+    branch: custom01
   file_glob: true
   file:
     - dist/Udeler*.AppImage
