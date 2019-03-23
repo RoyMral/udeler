@@ -22,14 +22,14 @@ matrix:
         - "travis_wait 30 sleep 1800 &"
         - sudo dpkg --add-architecture i386
         - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-        - sudo apt-get install apt-transport-https ca-certificates
+        - sudo apt-get install -qqy apt-transport-https ca-certificates
         - echo "deb https://download.mono-project.com/repo/ubuntu stable-xenial main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
         - wget -nc https://dl.winehq.org/wine-builds/winehq.key
         - sudo apt-key add winehq.key
         - sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ xenial main'
-        - sudo apt-get update -qy
-        - sudo apt-get install -y mono-complete ca-certificates-mono
-        - sudo apt-get install --install-recommends -y wine64-* winehq-stable
+        - sudo apt-get update -qqy
+        - sudo apt-get install -qqy mono-complete ca-certificates-mono
+        - sudo apt-get install -qqy --install-recommends wine64-* winehq-stable
       install:
         - npm install
       script:
@@ -75,7 +75,7 @@ before_deploy:
   - git config --local user.name "fr3aky"
   - git config --local user.email "fr3aky@phantom.zone"
   - export TRAVIS_TAG=${TRAVIS_TAG:-Snapshot-$(date +'%Y%m%d-%H%M')}
-  - git tag -a $TRAVIS_TAG -m "Releasing Udeler Snapshot"
+  - git tag -a $TRAVIS_TAG -m "Releasing Udeler Snapshot - by Updates"
 
 deploy:
   skip_cleanup: true
