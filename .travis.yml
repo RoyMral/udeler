@@ -31,7 +31,7 @@ matrix:
         - sudo apt-get install -qqy mono-complete ca-certificates-mono
         - sudo apt-get install -qqy --install-recommends wine64-* winehq-stable
       install:
-        - rm f package-lock.json
+        - rm -f package-lock.json
         - npm install
       script:
         - npm run build-win
@@ -44,7 +44,7 @@ matrix:
         apt:
           update: true
       install:
-        - rm f package-lock.json
+        - rm -f package-lock.json
         - npm install
       script:
         - "travis_wait 30 sleep 1800 &"
@@ -59,7 +59,7 @@ matrix:
         homebrew:
           update: true
       install:
-        - rm f package-lock.json
+        - rm -f package-lock.json
         - npm install
       script:
         - "travis_wait 30 sleep 1800 &"
